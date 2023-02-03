@@ -187,19 +187,19 @@ function getDataFromTable(data, filter) {
         else {
             progress = "-" + Math.abs(weightAtStart - currentWeight);
         }
-        if (currentweight.innerText == "-") {
-            currentweight.innerText = "-";
-        }
-        else {
+        if (currentweight.innerText == "-" && currentWeight != undefined) {
             currentweight.innerText = currentWeight + " kg";
         }
-        if (weightatperiodstart.innerText == "-") {
-            weightatperiodstart.innerText = "-";
-        }
         else {
+            currentweight.innerText = "-";
+        }
+        if (weightatperiodstart.innerText == "-" && weightAtStart != undefined) {
             weightatperiodstart.innerText = weightAtStart + " kg";
         }
-        if (progressweight.innerText == "-") {
+        else {
+            weightatperiodstart.innerText = "-";
+        }
+        if (progressweight.innerText == "-" && parseInt(progress) != 0) {
             progressweight.innerText = "-";
         }
         else {
@@ -247,7 +247,6 @@ function addEventListeners() {
 addEventListeners();
 setTableData();
 whenGetData();
-restrictFutureDates();
 let chartOptions = {
     chart: {
         toolbar: {
@@ -269,3 +268,4 @@ let chartOptions = {
 let chart = new ApexCharts(document.querySelector("#chart-diagramm"), chartOptions);
 chart.render();
 setTableData();
+restrictFutureDates();
