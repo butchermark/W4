@@ -63,12 +63,18 @@ function getTime() {
 }
 function setTableData() {
     const table = document.querySelector("#table");
-    /*
-    let datearray: Date[] = [];
-    datearray = localStorage.getItem("weightdate");
-    datearray.sort(function (a: Date, b: Date) {
-      return a.getTime() - b.getTime();
+    weightdatearray.sort(function (a, b) {
+        return new Date(a.date).valueOf() - new Date(b.date).valueOf();
     });
+    /*
+    let weightarray: Array<any> = [];
+  
+    const temporaryWeightArray = localStorage.getItem("weightdate");
+    if (temporaryWeightArray) {
+      console.log(localStorage.getItem("weightdate"));
+      weightarray = JSON.parse(temporaryWeightArray);
+      weightarray = weightarray.map((x) => x.weight);
+    }
     */
     let output = "";
     for (let i = 0; i < weightdatearray.length; i++) {
@@ -123,6 +129,7 @@ function setFilterDuration(button) {
             },
         ],
     });
+    chart.updateXa;
 }
 function getDataFromTable(data, filter) {
     const currentweight = document.querySelector("#current-weight-kg");
@@ -180,9 +187,24 @@ function getDataFromTable(data, filter) {
         else {
             progress = "-" + Math.abs(weightAtStart - currentWeight);
         }
-        currentweight.innerText = currentWeight + " kg";
-        weightatperiodstart.innerText = weightAtStart + " kg";
-        progressweight.innerText = progress + " kg";
+        if (currentweight.innerText == "-") {
+            currentweight.innerText = "-";
+        }
+        else {
+            currentweight.innerText = currentWeight + " kg";
+        }
+        if (weightatperiodstart.innerText == "-") {
+            weightatperiodstart.innerText = "-";
+        }
+        else {
+            weightatperiodstart.innerText = weightAtStart + " kg";
+        }
+        if (progressweight.innerText == "-") {
+            progressweight.innerText = "-";
+        }
+        else {
+            progressweight.innerText = progress + " kg";
+        }
     }
     return array;
 }
@@ -203,7 +225,6 @@ function addEventListeners() {
     const chartbuttons = document.querySelectorAll(".chart-buttons");
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        let szar = dateinput.value.split("-");
         if (isNaN(parseInt(dateinput.value))) {
             alert("Can't type nothing in date");
         }

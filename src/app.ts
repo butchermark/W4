@@ -73,12 +73,20 @@ function getTime() {
 
 function setTableData() {
   const table = document.querySelector("#table") as HTMLTableElement;
-  /*
-  let datearray: Date[] = [];
-  datearray = localStorage.getItem("weightdate");
-  datearray.sort(function (a: Date, b: Date) {
-    return a.getTime() - b.getTime();
+
+  weightdatearray.sort(function (a: WeightDate, b: WeightDate) {
+    return new Date(a.date).valueOf() - new Date(b.date).valueOf();
   });
+
+  /*
+  let weightarray: Array<any> = [];
+
+  const temporaryWeightArray = localStorage.getItem("weightdate");
+  if (temporaryWeightArray) {
+    console.log(localStorage.getItem("weightdate"));
+    weightarray = JSON.parse(temporaryWeightArray);
+    weightarray = weightarray.map((x) => x.weight);
+  }
   */
 
   let output: string = "";
@@ -148,6 +156,7 @@ function setFilterDuration(button: string) {
       },
     ],
   });
+  chart.updateXa;
 }
 
 function getDataFromTable(data: string, filter: string) {
@@ -214,9 +223,21 @@ function getDataFromTable(data: string, filter: string) {
       progress = "-" + Math.abs(weightAtStart - currentWeight);
     }
 
-    currentweight.innerText = currentWeight + " kg";
-    weightatperiodstart.innerText = weightAtStart + " kg";
-    progressweight.innerText = progress + " kg";
+    if (currentweight.innerText == "-") {
+      currentweight.innerText = "-";
+    } else {
+      currentweight.innerText = currentWeight + " kg";
+    }
+    if (weightatperiodstart.innerText == "-") {
+      weightatperiodstart.innerText = "-";
+    } else {
+      weightatperiodstart.innerText = weightAtStart + " kg";
+    }
+    if (progressweight.innerText == "-") {
+      progressweight.innerText = "-";
+    } else {
+      progressweight.innerText = progress + " kg";
+    }
   }
 
   return array;
@@ -244,7 +265,6 @@ function addEventListeners() {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    let szar = dateinput.value.split("-");
     if (isNaN(parseInt(dateinput.value))) {
       alert("Can't type nothing in date");
     } else {
