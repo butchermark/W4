@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/styles/styles.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="main-div">
+      <div id="title-div"><p id="title">Weight Tracker</p></div>
+      <form id="form-div">
+        <div class="date-weight-input">
+          <p class="secondary-titles">Date</p>
+          <input id="date-input" type="date" />
+        </div>
+        <div class="date-weight-input">
+          <p class="secondary-titles">Weight</p>
+          <input id="kg-input" type="number" />
+        </div>
+        <div class="input-buttons-div">
+          <button class="input-buttons" id="add-button" type="submit">
+            Add
+          </button>
+        </div>
+        <div class="input-buttons-div"></div>
+      </form>
+      <div id="history-title-div"><p class="small-titles">History</p></div>
+      <div id="table-div">
+        <table id="table"></table>
+      </div>
+      <div id="chart-title-div"><p class="small-titles">Statistics</p></div>
+      <div id="chart-buttons-div">
+        <button class="chart-buttons" type="button">Week</button>
+        <button class="chart-buttons" type="button">Month</button>
+        <button class="chart-buttons" type="button">Year</button>
+        <button class="chart-buttons" type="button">Lifetime</button>
+      </div>
+      <div id="chart-diagramm"></div>
+      <div id="weight-displays">
+        <div id="current-weight-div">
+          <p class="texts" id="current-weight-kg">-</p>
+          <p class="texts">Current Weight</p>
+        </div>
+        <div id="weight-at-period-start-div">
+          <p class="texts" id="weight-at-period-start-kg">-</p>
+          <p class="texts">Weight at the start of the period</p>
+        </div>
+      </div>
+      <div id="progress-div">
+        <p class="texts" id="progress-kg">-</p>
+        <p class="texts">Progress</p>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script type="module" src="/src/app.js" defer></script>
+</html>

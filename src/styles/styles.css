@@ -1,0 +1,61 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#main-div {
+  width: 75%;
+  margin: auto;
+}
+#main-div #title {
+  font-size: 30px;
+}
+#main-div #form-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#main-div #form-div .secondary-titles {
+  font-size: 16px;
+}
+#main-div #form-div .date-weight-input {
+  display: flex;
+  flex-direction: column;
+}
+#main-div #form-div .input-buttons-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#main-div #form-div .input-buttons-div .input-buttons {
+  width: 75px;
+}
+#main-div .small-titles {
+  font-size: 26px;
+}
+#main-div #table {
+  width: 100%;
+}
+#main-div #table .row-second-element {
+  text-align: right;
+}
+#main-div #chart-buttons-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#main-div #chart-buttons-div .chart-buttons {
+  width: 200px;
+}
+#main-div #weight-displays {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#main-div #progress-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.texts {
+  text-align: center;
+}/*# sourceMappingURL=styles.css.map */

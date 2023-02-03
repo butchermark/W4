@@ -1,0 +1,23 @@
+{
+  "name": "w4",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "live-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marksplendex/W4.git"
+  },
+  "author": "Mészáros Márk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marksplendex/W4/issues"
+  },
+  "homepage": "https://github.com/marksplendex/W4#readme",
+  "dependencies": {
+    "apexcharts": "^3.36.3"
+  }
+}

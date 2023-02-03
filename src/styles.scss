@@ -1,0 +1,62 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+@mixin flexRow {
+  display: flex;
+  flex-direction: row;
+}
+@mixin flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+#main-div {
+  width: 75%;
+  margin: auto;
+  #title {
+    font-size: 30px;
+  }
+  #form-div {
+    @include flexRow();
+    justify-content: space-between;
+    .secondary-titles {
+      font-size: 16px;
+    }
+    .date-weight-input {
+      @include flexColumn();
+    }
+    .input-buttons-div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .input-buttons {
+        width: 75px;
+      }
+    }
+  }
+  .small-titles {
+    font-size: 26px;
+  }
+  #table {
+    width: 100%;
+    .row-second-element {
+      text-align: right;
+    }
+  }
+  #chart-buttons-div {
+    @include flexRow();
+    justify-content: space-between;
+    .chart-buttons {
+      width: 200px;
+    }
+  }
+  #weight-displays {
+    @include flexRow();
+    justify-content: space-between;
+  }
+  #progress-display {
+    @include flexColumn();
+  }
+}
+.texts {
+  text-align: center;
+}
