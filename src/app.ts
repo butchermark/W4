@@ -92,7 +92,7 @@ function setTableData() {
   let output: string = "";
   for (let i = 0; i < weightdatearray.length; i++) {
     output += `<tr>
-                <td>${weightdatearray[i].weight} kg</td> `;
+                <td>${weightdatearray[i].weight},0 kg</td> `;
 
     // mai nap
     if (weightdatearray[i].date.getDate() === new Date().getDate()) {
@@ -224,19 +224,19 @@ function getDataFromTable(data: string, filter: string) {
     }
 
     if (currentweight.innerText == "-" && currentWeight != undefined) {
-      currentweight.innerText = currentWeight + " kg";
+      currentweight.innerText = currentWeight + ",0" + " kg";
     } else {
       currentweight.innerText = "-";
     }
     if (weightatperiodstart.innerText == "-" && weightAtStart != undefined) {
-      weightatperiodstart.innerText = weightAtStart + " kg";
+      weightatperiodstart.innerText = weightAtStart + ",0" + " kg";
     } else {
       weightatperiodstart.innerText = "-";
     }
     if (progressweight.innerText == "-" && parseInt(progress) != 0) {
       progressweight.innerText = "-";
     } else {
-      progressweight.innerText = progress + " kg";
+      progressweight.innerText = progress + ",0" + " kg";
     }
   }
 
