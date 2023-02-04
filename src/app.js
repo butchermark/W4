@@ -1,6 +1,4 @@
 "use strict";
-const dateinput = document.querySelector("#date-input");
-const weightinput = document.querySelector("#kg-input");
 let filterDuration = "week";
 const monthNames = [
     "Jan",
@@ -24,17 +22,6 @@ function addNewData(newdate, newweight) {
     };
     weightdatearray.push(newData);
     localStorage.setItem("weightdate", JSON.stringify(weightdatearray));
-    chart.updateOptions({
-        xaxis: {
-            categories: getDataFromTable("date", filterDuration),
-        },
-        series: [
-            {
-                data: getDataFromTable("number", filterDuration),
-            },
-        ],
-    });
-    chart.updateXa;
     setTableData();
 }
 function whenGetData() {
@@ -66,20 +53,11 @@ function setTableData() {
     weightdatearray.sort(function (a, b) {
         return new Date(a.date).valueOf() - new Date(b.date).valueOf();
     });
-    /*
-    let weightarray: Array<any> = [];
-  
-    const temporaryWeightArray = localStorage.getItem("weightdate");
-    if (temporaryWeightArray) {
-      console.log(localStorage.getItem("weightdate"));
-      weightarray = JSON.parse(temporaryWeightArray);
-      weightarray = weightarray.map((x) => x.weight);
-    }
-    */
+    weightdatearray.reverse();
     let output = "";
     for (let i = 0; i < weightdatearray.length; i++) {
         output += `<tr>
-                <td>${weightdatearray[i].weight},0 kg</td> `;
+                <td>${weightdatearray[i].weight}</td> `;
         // mai nap
         if (weightdatearray[i].date.getDate() === new Date().getDate()) {
             output += `<td class="row-second-element"> today at ${getTime()}</td>`;
@@ -119,23 +97,12 @@ function setFilterDuration(button) {
             filterDuration = "lifetime";
             break;
     }
-    chart.updateOptions({
-        xaxis: {
-            categories: getDataFromTable("date", filterDuration),
-        },
-        series: [
-            {
-                data: getDataFromTable("number", filterDuration),
-            },
-        ],
-    });
-    chart.updateXa;
+    chartUpdate();
 }
 function getDataFromTable(data, filter) {
-    const currentweight = document.querySelector("#current-weight-kg");
-    const weightatperiodstart = document.querySelector("#weight-at-period-start-kg");
-    const progressweight = document.querySelector("#progress-kg");
-    let array = [];
+    const currentWeightText = document.querySelector("#current-weight-kg");
+    const weightAtPeriodStartText = document.querySelector("#weight-at-period-start-kg");
+    const progressWeightText = document.querySelector("#progress-kg");
     let dataToPush = 999;
     let i = 0;
     switch (filter) {
@@ -167,6 +134,7 @@ function getDataFromTable(data, filter) {
             dataToPush = weightdatearray.length;
             break;
     }
+    let array = [];
     if (data === "date") {
         for (let i = 0; i < dataToPush; i++) {
             array.push(padTo2Digits(weightdatearray[i].date.getDate()) +
@@ -187,28 +155,50 @@ function getDataFromTable(data, filter) {
         else {
             progress = "-" + Math.abs(weightAtStart - currentWeight);
         }
-        if (currentweight.innerText == "-" && currentWeight != undefined) {
-            currentweight.innerText = currentWeight + ",0" + " kg";
+        switch (currentWeight) {
+            case undefined:
+                currentWeightText.innerText = "-";
+                break;
+            case currentWeight:
+                if (currentWeightText.innerText) {
+                    currentWeightText.innerText = parseFloat(currentWeight) + " kg";
+                }
+                else {
+                    currentWeightText.innerText;
+                }
+                break;
+            default:
+                alert("Something went wrong");
+                break;
+        }
+        switch (weightAtStart) {
+            case undefined:
+                weightAtPeriodStartText.innerText = "-";
+                break;
+            case weightAtStart:
+                if (weightAtPeriodStartText.innerText) {
+                    weightAtPeriodStartText.innerText = parseFloat(weightAtStart) + " kg";
+                }
+                else {
+                    weightAtPeriodStartText.innerText;
+                }
+                break;
+            default:
+                alert("Something went wrong");
+                break;
+        }
+        if (isNaN(parseFloat(progress))) {
+            progressWeightText.innerText = "-";
         }
         else {
-            currentweight.innerText = "-";
-        }
-        if (weightatperiodstart.innerText == "-" && weightAtStart != undefined) {
-            weightatperiodstart.innerText = weightAtStart + ",0" + " kg";
-        }
-        else {
-            weightatperiodstart.innerText = "-";
-        }
-        if (progressweight.innerText == "-" && parseInt(progress) != 0) {
-            progressweight.innerText = "-";
-        }
-        else {
-            progressweight.innerText = progress + ",0" + " kg";
+            progressWeightText.innerText =
+                Math.round(parseFloat(progress) * 100) / 100 + "kg";
         }
     }
     return array;
 }
 function restrictFutureDates() {
+    const dateinput = document.querySelector("#date-input");
     const today = new Date();
     let month = (today.getMonth() + 1).toString();
     let day = today.getDate().toString();
@@ -219,8 +209,10 @@ function restrictFutureDates() {
         day = "0" + day.toString();
     var maxDate = year + "-" + month + "-" + day;
     dateinput.setAttribute("max", maxDate);
+    return dateinput;
 }
-function addEventListeners() {
+function addEventListeners(dateinput) {
+    const weightinput = document.querySelector("#kg-input");
     const form = document.querySelector("#form-div");
     const chartbuttons = document.querySelectorAll(".chart-buttons");
     form.addEventListener("submit", (event) => {
@@ -233,7 +225,7 @@ function addEventListeners() {
                 alert("Can't type 0 in weight");
             }
             else if (weightinput && weightinput.value) {
-                addNewData(new Date(dateinput.value + " " + getTime()), parseInt(weightinput.value));
+                addNewData(new Date(dateinput.value + " " + getTime()), parseFloat(weightinput.value));
             }
             else {
                 alert("Can't type nothing in weight");
@@ -244,7 +236,20 @@ function addEventListeners() {
         button.addEventListener("click", () => setFilterDuration(button.innerText));
     });
 }
-addEventListeners();
+function chartUpdate() {
+    chart.updateOptions({
+        xaxis: {
+            categories: getDataFromTable("date", filterDuration),
+        },
+        series: [
+            {
+                data: getDataFromTable("number", filterDuration),
+            },
+        ],
+    });
+    chart.updateXa;
+}
+addEventListeners(restrictFutureDates());
 setTableData();
 whenGetData();
 let chartOptions = {
@@ -268,4 +273,3 @@ let chartOptions = {
 let chart = new ApexCharts(document.querySelector("#chart-diagramm"), chartOptions);
 chart.render();
 setTableData();
-restrictFutureDates();

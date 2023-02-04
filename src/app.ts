@@ -1,6 +1,3 @@
-const dateinput = document.querySelector("#date-input") as HTMLInputElement;
-const weightinput = document.querySelector("#kg-input") as HTMLInputElement;
-
 let filterDuration: string = "week";
 const monthNames: string[] = [
   "Jan",
@@ -30,17 +27,6 @@ function addNewData(newdate: Date, newweight: number) {
   };
   weightdatearray.push(newData);
   localStorage.setItem("weightdate", JSON.stringify(weightdatearray));
-  chart.updateOptions({
-    xaxis: {
-      categories: getDataFromTable("date", filterDuration),
-    },
-    series: [
-      {
-        data: getDataFromTable("number", filterDuration),
-      },
-    ],
-  });
-  chart.updateXa;
 
   setTableData();
 }
@@ -77,22 +63,12 @@ function setTableData() {
   weightdatearray.sort(function (a: WeightDate, b: WeightDate) {
     return new Date(a.date).valueOf() - new Date(b.date).valueOf();
   });
-
-  /*
-  let weightarray: Array<any> = [];
-
-  const temporaryWeightArray = localStorage.getItem("weightdate");
-  if (temporaryWeightArray) {
-    console.log(localStorage.getItem("weightdate"));
-    weightarray = JSON.parse(temporaryWeightArray);
-    weightarray = weightarray.map((x) => x.weight);
-  }
-  */
+  weightdatearray.reverse();
 
   let output: string = "";
   for (let i = 0; i < weightdatearray.length; i++) {
     output += `<tr>
-                <td>${weightdatearray[i].weight},0 kg</td> `;
+                <td>${weightdatearray[i].weight}</td> `;
 
     // mai nap
     if (weightdatearray[i].date.getDate() === new Date().getDate()) {
@@ -146,30 +122,20 @@ function setFilterDuration(button: string) {
       filterDuration = "lifetime";
       break;
   }
-  chart.updateOptions({
-    xaxis: {
-      categories: getDataFromTable("date", filterDuration),
-    },
-    series: [
-      {
-        data: getDataFromTable("number", filterDuration),
-      },
-    ],
-  });
-  chart.updateXa;
+  chartUpdate();
 }
 
 function getDataFromTable(data: string, filter: string) {
-  const currentweight = document.querySelector(
+  const currentWeightText = document.querySelector(
     "#current-weight-kg"
   ) as HTMLParagraphElement;
-  const weightatperiodstart = document.querySelector(
+  const weightAtPeriodStartText = document.querySelector(
     "#weight-at-period-start-kg"
   ) as HTMLParagraphElement;
-  const progressweight = document.querySelector(
+  const progressWeightText = document.querySelector(
     "#progress-kg"
   ) as HTMLParagraphElement;
-  let array: any[] = [];
+
   let dataToPush: number = 999;
   let i: number = 0;
 
@@ -200,6 +166,8 @@ function getDataFromTable(data: string, filter: string) {
       break;
   }
 
+  let array: any[] = [];
+
   if (data === "date") {
     for (let i = 0; i < dataToPush; i++) {
       array.push(
@@ -223,20 +191,41 @@ function getDataFromTable(data: string, filter: string) {
       progress = "-" + Math.abs(weightAtStart - currentWeight);
     }
 
-    if (currentweight.innerText == "-" && currentWeight != undefined) {
-      currentweight.innerText = currentWeight + ",0" + " kg";
-    } else {
-      currentweight.innerText = "-";
+    switch (currentWeight) {
+      case undefined:
+        currentWeightText.innerText = "-";
+        break;
+      case currentWeight:
+        if (currentWeightText.innerText) {
+          currentWeightText.innerText = parseFloat(currentWeight) + " kg";
+        } else {
+          currentWeightText.innerText;
+        }
+        break;
+      default:
+        alert("Something went wrong");
+        break;
     }
-    if (weightatperiodstart.innerText == "-" && weightAtStart != undefined) {
-      weightatperiodstart.innerText = weightAtStart + ",0" + " kg";
-    } else {
-      weightatperiodstart.innerText = "-";
+    switch (weightAtStart) {
+      case undefined:
+        weightAtPeriodStartText.innerText = "-";
+        break;
+      case weightAtStart:
+        if (weightAtPeriodStartText.innerText) {
+          weightAtPeriodStartText.innerText = parseFloat(weightAtStart) + " kg";
+        } else {
+          weightAtPeriodStartText.innerText;
+        }
+        break;
+      default:
+        alert("Something went wrong");
+        break;
     }
-    if (progressweight.innerText == "-" && parseInt(progress) != 0) {
-      progressweight.innerText = "-";
+    if (isNaN(parseFloat(progress))) {
+      progressWeightText.innerText = "-";
     } else {
-      progressweight.innerText = progress + ",0" + " kg";
+      progressWeightText.innerText =
+        Math.round(parseFloat(progress) * 100) / 100 + "kg";
     }
   }
 
@@ -244,6 +233,7 @@ function getDataFromTable(data: string, filter: string) {
 }
 
 function restrictFutureDates() {
+  const dateinput = document.querySelector("#date-input") as HTMLInputElement;
   const today = new Date();
 
   let month = (today.getMonth() + 1).toString();
@@ -255,9 +245,11 @@ function restrictFutureDates() {
 
   var maxDate = year + "-" + month + "-" + day;
   dateinput.setAttribute("max", maxDate);
+  return dateinput;
 }
 
-function addEventListeners() {
+function addEventListeners(dateinput: HTMLInputElement) {
+  const weightinput = document.querySelector("#kg-input") as HTMLInputElement;
   const form = document.querySelector("#form-div") as HTMLFormElement;
   const chartbuttons = document.querySelectorAll(
     ".chart-buttons"
@@ -273,7 +265,7 @@ function addEventListeners() {
       } else if (weightinput && weightinput.value) {
         addNewData(
           new Date(dateinput.value + " " + getTime()),
-          parseInt(weightinput.value)
+          parseFloat(weightinput.value)
         );
       } else {
         alert("Can't type nothing in weight");
@@ -285,11 +277,23 @@ function addEventListeners() {
     button.addEventListener("click", () => setFilterDuration(button.innerText));
   });
 }
+function chartUpdate() {
+  chart.updateOptions({
+    xaxis: {
+      categories: getDataFromTable("date", filterDuration),
+    },
+    series: [
+      {
+        data: getDataFromTable("number", filterDuration),
+      },
+    ],
+  });
+  chart.updateXa;
+}
 
-addEventListeners();
+addEventListeners(restrictFutureDates());
 setTableData();
 whenGetData();
-
 let chartOptions = {
   chart: {
     toolbar: {
@@ -314,4 +318,3 @@ let chart = new ApexCharts(
 );
 chart.render();
 setTableData();
-restrictFutureDates();
