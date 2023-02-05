@@ -23,6 +23,7 @@ function addNewData(newdate, newweight) {
     weightdatearray.push(newData);
     localStorage.setItem("weightdate", JSON.stringify(weightdatearray));
     setTableData();
+    chartUpdate();
 }
 function whenGetData() {
     if (localStorage.getItem("weightdate")) {
@@ -59,12 +60,14 @@ function setTableData() {
         output += `<tr>
                 <td>${weightdatearray[i].weight}</td> `;
         // mai nap
-        if (weightdatearray[i].date.getDate() === new Date().getDate()) {
+        if (weightdatearray[i].date.getDate() === new Date().getDate() &&
+            weightdatearray[i].date.getFullYear() === new Date().getFullYear()) {
             output += `<td class="row-second-element"> today at ${getTime()}</td>`;
             output += `</tr>`;
         }
         //tegnap
-        else if (weightdatearray[i].date.getDate() === new Date().getDate() - 1) {
+        else if (weightdatearray[i].date.getDate() === new Date().getDate() - 1 &&
+            weightdatearray[i].date.getFullYear() === new Date().getFullYear()) {
             output += `<td class="row-second-element"> yesterday at ${getTime()}</td>`;
         }
         //ha nem az idei év
@@ -72,7 +75,7 @@ function setTableData() {
             output += `<td class="row-second-element">${weightdatearray[i].date.getDate()} ${monthNames[weightdatearray[i].date.getMonth()]} ${weightdatearray[i].date.getFullYear()} at ${getTime()}</td>`;
         }
         // idén de nem tegnap
-        else if (weightdatearray[i].date.getDate() >= new Date().getDate() - 2) {
+        else if (weightdatearray[i].date.getDate() >= new Date().getDate() - 31) {
             output += `<td class="row-second-element">${weightdatearray[i].date.getDate()} ${monthNames[weightdatearray[i].date.getMonth()]} at ${padTo2Digits(weightdatearray[i].date.getHours())}:${padTo2Digits(weightdatearray[i].date.getMinutes())}</td>`;
         }
         output += `</tr>`;
@@ -80,6 +83,7 @@ function setTableData() {
             break;
         }
     }
+    weightdatearray.reverse();
     table.innerHTML = output;
 }
 function setFilterDuration(button) {
@@ -104,9 +108,9 @@ function getDataFromTable(data, filter) {
     const weightAtPeriodStartText = document.querySelector("#weight-at-period-start-kg");
     const progressWeightText = document.querySelector("#progress-kg");
     let dataToPush = 999;
-    let i = 0;
     switch (filter) {
         case "week":
+            //ide az if-ekhez nemtudom behozni a date-t és ellenőrzni week month meg year alapján, pedig a logika jó lenne
             if (weightdatearray.length > 7) {
                 dataToPush = 7;
             }
@@ -252,6 +256,7 @@ function chartUpdate() {
 addEventListeners(restrictFutureDates());
 setTableData();
 whenGetData();
+weightdatearray.reverse();
 let chartOptions = {
     chart: {
         toolbar: {
@@ -273,3 +278,4 @@ let chartOptions = {
 let chart = new ApexCharts(document.querySelector("#chart-diagramm"), chartOptions);
 chart.render();
 setTableData();
+chartUpdate();

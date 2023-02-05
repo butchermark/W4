@@ -29,6 +29,7 @@ function addNewData(newdate: Date, newweight: number) {
   localStorage.setItem("weightdate", JSON.stringify(weightdatearray));
 
   setTableData();
+  chartUpdate();
 }
 function whenGetData() {
   if (localStorage.getItem("weightdate")) {
@@ -39,6 +40,7 @@ function whenGetData() {
         date: new Date(data.date),
         weight: data.weight,
       };
+
       weightdatearray.push(newdata);
     });
   }
@@ -71,12 +73,18 @@ function setTableData() {
                 <td>${weightdatearray[i].weight}</td> `;
 
     // mai nap
-    if (weightdatearray[i].date.getDate() === new Date().getDate()) {
+    if (
+      weightdatearray[i].date.getDate() === new Date().getDate() &&
+      weightdatearray[i].date.getFullYear() === new Date().getFullYear()
+    ) {
       output += `<td class="row-second-element"> today at ${getTime()}</td>`;
       output += `</tr>`;
     }
     //tegnap
-    else if (weightdatearray[i].date.getDate() === new Date().getDate() - 1) {
+    else if (
+      weightdatearray[i].date.getDate() === new Date().getDate() - 1 &&
+      weightdatearray[i].date.getFullYear() === new Date().getFullYear()
+    ) {
       output += `<td class="row-second-element"> yesterday at ${getTime()}</td>`;
     }
     //ha nem az idei év
@@ -90,7 +98,7 @@ function setTableData() {
       } ${weightdatearray[i].date.getFullYear()} at ${getTime()}</td>`;
     }
     // idén de nem tegnap
-    else if (weightdatearray[i].date.getDate() >= new Date().getDate() - 2) {
+    else if (weightdatearray[i].date.getDate() >= new Date().getDate() - 31) {
       output += `<td class="row-second-element">${weightdatearray[
         i
       ].date.getDate()} ${
@@ -104,6 +112,8 @@ function setTableData() {
       break;
     }
   }
+  weightdatearray.reverse();
+
   table.innerHTML = output;
 }
 
@@ -122,6 +132,7 @@ function setFilterDuration(button: string) {
       filterDuration = "lifetime";
       break;
   }
+
   chartUpdate();
 }
 
@@ -137,10 +148,10 @@ function getDataFromTable(data: string, filter: string) {
   ) as HTMLParagraphElement;
 
   let dataToPush: number = 999;
-  let i: number = 0;
 
   switch (filter) {
     case "week":
+      //ide az if-ekhez nemtudom behozni a date-t és ellenőrzni week month meg year alapján, pedig a logika jó lenne
       if (weightdatearray.length > 7) {
         dataToPush = 7;
       } else {
@@ -294,6 +305,7 @@ function chartUpdate() {
 addEventListeners(restrictFutureDates());
 setTableData();
 whenGetData();
+weightdatearray.reverse();
 let chartOptions = {
   chart: {
     toolbar: {
@@ -317,4 +329,6 @@ let chart = new ApexCharts(
   chartOptions
 );
 chart.render();
+
 setTableData();
+chartUpdate();
